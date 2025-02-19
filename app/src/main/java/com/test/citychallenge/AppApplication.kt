@@ -1,4 +1,7 @@
 package com.test.citychallenge
 
-class AppApplication {
-}
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@HiltAndroidApp
+class AppApplication : Application()
