@@ -1,4 +1,4 @@
-package com.test.citychallenge.ui.theme
+package com.test.citychallenge.presentation.view.theme
 
 import androidx.compose.ui.graphics.Color
 
