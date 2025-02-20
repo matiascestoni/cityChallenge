@@ -8,6 +8,10 @@ class SyncCitiesUseCase @Inject constructor(
     private val cityRepository: CityRepository
 ) {
     suspend operator fun invoke(): Response<Boolean> {
-        return cityRepository.syncCities()
+        return try {
+            cityRepository.syncCities()
+        } catch (e: Exception) {
+            Response.Error(e.message ?: "Sync failed")
+        }
     }
 }

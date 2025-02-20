@@ -1,6 +1,5 @@
 package com.test.citychallenge.data
 
-import android.util.Log
 import com.test.citychallenge.common.Response
 import com.test.citychallenge.data.local.LocalDataSource
 import com.test.citychallenge.data.local.mapper.toEntity
@@ -28,8 +27,7 @@ internal class CityRepositoryImpl @Inject constructor(
             }
             Response.Success(true)
         } catch (e: Exception) {
-            Log.e("CityRepository", "Failed to fetch cities: ${e.message}")
-            Response.Success(false)
+            Response.Error(e.message ?: "Sync failed")
         }
     }
 
@@ -43,7 +41,6 @@ internal class CityRepositoryImpl @Inject constructor(
         ).map { entities ->
             Response.Success(entities.map { it.toModel() })
         }.catch { e ->
-            Log.e("CityRepository", "Failed to search cities: ${e.message}")
             emit(Response.Error(e.message ?: "Search failed"))
         }.collect {
             emit(it)

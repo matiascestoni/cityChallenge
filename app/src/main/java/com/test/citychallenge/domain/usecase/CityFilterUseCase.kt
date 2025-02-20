@@ -13,6 +13,6 @@ class CityFilterUseCase @Inject constructor(
         prefix: String,
         onlyFavorites: Boolean = false
     ): Flow<Response<List<CityModel>>> {
-        return cityRepository.searchCities(prefix, onlyFavorites)
+        return cityRepository.searchCities(prefix.trim().lowercase(), onlyFavorites)
     }
 }
