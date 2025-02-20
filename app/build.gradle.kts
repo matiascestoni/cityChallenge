@@ -72,12 +72,23 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v262)
     implementation(libs.androidx.activity.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    // Turbine for Flow testing
+    androidTestImplementation(libs.turbine)
+
+    // Room testing - in-memory database for integration tests
+    androidTestImplementation(libs.androidx.room.testing)
+
+    // AndroidX Test - Instrumentation testing
+    androidTestImplementation(libs.androidx.runner)
+
+    // MockWebServer for API integration testing
+    testImplementation(libs.mockwebserver)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

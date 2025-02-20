@@ -19,9 +19,6 @@ interface CityDao {
     )
     fun searchCities(prefix: String, onlyFavorites: Boolean): Flow<List<CityEntity>>
 
-    @Query("SELECT * FROM cities")
-    suspend fun getAllCities(): List<CityEntity>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCities(cities: List<CityEntity>)
 
