@@ -1,5 +1,9 @@
 package com.test.citychallenge.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.test.citychallenge.common.Response
 import com.test.citychallenge.data.local.LocalDataSource
 import com.test.citychallenge.data.local.mapper.toEntity
@@ -52,6 +56,41 @@ internal class CityRepositoryImpl @Inject constructor(
             localDataSource.toggleFavorite(cityId)
         } catch (e: Exception) {
             throw Exception("Failed to toggle favorite: ${e.message}")
+        }
+    }
+
+    override suspend fun getSelectedCity(): CityModel? {
+        try {
+            return localDataSource.getSelectedCity()?.toModel()
+        } catch (e: Exception) {
+            throw Exception("Failed to get selected city: ${e.message}")
+        }
+    }
+
+    override suspend fun setSelectedCity(city: CityModel) {
+        try {
+            localDataSource.setSelectedCity(city.toEntity())
+        } catch (e: Exception) {
+            throw Exception("Failed to set selected city: ${e.message}")
+        }
+    }
+
+    override fun searchCitiesWithPager(
+        prefix: String,
+        onlyFavorites: Boolean
+    ): Flow<PagingData<CityModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 50, // Items per page
+                prefetchDistance = 20, // Load next page when 20 items remain,
+                enablePlaceholders = false
+            ),
+        ) {
+            localDataSource.pagingSource(prefix, onlyFavorites)
+        }.flow.map { pagingData ->
+            pagingData.map { entity -> entity.toModel() }
+        }.catch {
+            emit(PagingData.empty())
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.test.citychallenge.data.local
 
+import android.content.Context
 import com.test.citychallenge.data.local.dao.CityDao
 import com.test.citychallenge.data.local.model.CityEntity
 import io.mockk.*
@@ -13,12 +14,16 @@ import org.junit.Test
 class LocalDataSourceImplTest {
 
     private lateinit var dao: CityDao
+    private lateinit var context: Context
+    private lateinit var selectedCityStore: SelectedCityStore
     private lateinit var localDataSource: LocalDataSourceImpl
 
     @Before
     fun setup() {
         dao = mockk()
-        localDataSource = LocalDataSourceImpl(dao)
+        context = mockk(relaxed = true)
+        selectedCityStore = spyk(SelectedCityStore(context))
+        localDataSource = LocalDataSourceImpl(dao, selectedCityStore)
     }
 
     @Test

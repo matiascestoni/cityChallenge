@@ -1,5 +1,6 @@
 package com.test.citychallenge.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -24,4 +25,20 @@ interface CityDao {
 
     @Query("UPDATE cities SET isFavorite = NOT isFavorite WHERE id = :cityId")
     suspend fun toggleFavorite(cityId: Long)
+
+    @Query(
+        """
+        SELECT * FROM cities 
+        WHERE name LIKE :prefix || '%' 
+        AND (:onlyFavorites = 0 OR isFavorite = 1)
+        ORDER BY name
+    """
+    )
+    fun pagingSource(
+        prefix: String,
+        onlyFavorites: Boolean
+    ): PagingSource<Int, CityEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCity(city: CityEntity)
 }

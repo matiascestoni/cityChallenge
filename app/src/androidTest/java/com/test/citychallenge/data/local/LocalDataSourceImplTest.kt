@@ -1,11 +1,14 @@
 package com.test.citychallenge.data.local
 
+import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.test.citychallenge.data.local.dao.CityDao
 import com.test.citychallenge.data.local.database.CityDatabase
 import com.test.citychallenge.data.local.model.CityEntity
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -19,7 +22,9 @@ class LocalDataSourceImplTest {
 
     private lateinit var database: CityDatabase
     private lateinit var dao: CityDao
+    private lateinit var context: Context
     private lateinit var localDataSource: LocalDataSource
+    private lateinit var selectedCityStore: SelectedCityStore
 
     @Before
     fun setUp() {
@@ -32,7 +37,9 @@ class LocalDataSourceImplTest {
             .build()
 
         dao = database.cityDAO()
-        localDataSource = LocalDataSourceImpl(dao)
+        context = mockk(relaxed = true)
+        selectedCityStore = spyk(SelectedCityStore(context))
+        localDataSource = LocalDataSourceImpl(dao, selectedCityStore)
     }
 
     @After

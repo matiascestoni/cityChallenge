@@ -1,5 +1,6 @@
 package com.test.citychallenge.data
 
+import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -7,12 +8,15 @@ import app.cash.turbine.test
 import com.test.citychallenge.common.Response
 import com.test.citychallenge.data.local.LocalDataSource
 import com.test.citychallenge.data.local.LocalDataSourceImpl
+import com.test.citychallenge.data.local.SelectedCityStore
 import com.test.citychallenge.data.local.dao.CityDao
 import com.test.citychallenge.data.local.database.CityDatabase
 import com.test.citychallenge.data.local.model.CityEntity
 import com.test.citychallenge.data.remote.CityApiService
 import com.test.citychallenge.domain.model.CityModel
 import com.test.citychallenge.domain.model.Coord
+import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -29,9 +33,11 @@ class CityRepositoryImplTest {
 
     private lateinit var database: CityDatabase
     private lateinit var dao: CityDao
+    private lateinit var context: Context
     private lateinit var localDataSource: LocalDataSource
     private lateinit var fakeApiService: FakeCityApiService
     private lateinit var repository: CityRepositoryImpl
+    private lateinit var selectedCityStore: SelectedCityStore
 
     @Before
     fun setUp() {
@@ -44,7 +50,9 @@ class CityRepositoryImplTest {
             .build()
 
         dao = database.cityDAO()
-        localDataSource = LocalDataSourceImpl(dao)
+        context = mockk(relaxed = true)
+        selectedCityStore = spyk(SelectedCityStore(context))
+        localDataSource = LocalDataSourceImpl(dao, selectedCityStore)
         fakeApiService = FakeCityApiService()
         repository = CityRepositoryImpl(fakeApiService, localDataSource)
     }

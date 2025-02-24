@@ -21,6 +21,6 @@ fun CityModel.toEntity(): CityEntity {
         country = this.country,
         lat = this.coord.lat,
         lon = this.coord.lon,
-        isFavorite = false
+        isFavorite = this.isFavorite
     )
 }

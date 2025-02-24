@@ -7,10 +7,12 @@ import com.google.gson.GsonBuilder
 import com.test.citychallenge.data.CityRepositoryImpl
 import com.test.citychallenge.data.local.LocalDataSource
 import com.test.citychallenge.data.local.LocalDataSourceImpl
+import com.test.citychallenge.data.local.SelectedCityStore
 import com.test.citychallenge.data.local.dao.CityDao
 import com.test.citychallenge.data.local.database.CityDatabase
 import com.test.citychallenge.data.remote.CityApiService
 import com.test.citychallenge.domain.CityRepository
+import com.test.citychallenge.presentation.navigation.NavigationManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,8 +68,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocalDataSource(cityDAO: CityDao): LocalDataSource {
-        return LocalDataSourceImpl(cityDAO)
+    fun provideLocalDataSource(cityDAO: CityDao, selectedCityStore: SelectedCityStore): LocalDataSource {
+        return LocalDataSourceImpl(cityDAO, selectedCityStore)
     }
 
 
@@ -78,5 +80,17 @@ object AppModule {
         localDataSource: LocalDataSource
     ): CityRepository {
         return CityRepositoryImpl(apiService, localDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun providesNavigationManager(): NavigationManager {
+        return NavigationManager()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSelectedCityStore(@ApplicationContext context: Context): SelectedCityStore {
+        return SelectedCityStore(context)
     }
 }
